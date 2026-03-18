@@ -1,0 +1,70 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --rose: #e8526a;
+  --rose-dark: #c23b53;
+  --blush: #fce8ec;
+  --cream: #fff8f5;
+  --charcoal: #1e1b2e;
+  --muted: #8a7f90;
+  --white: #ffffff;
+  --green: #2ecc71;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  min-height: 100vh;
+  color: var(--charcoal);
+}
+
+.toast-container {
+  position: fixed; top: 84px; right: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+  z-index: 9999; pointer-events: none;
+}
+.toast {
+  min-width: 320px; max-width: 380px;
+  background: white; border-radius: 16px;
+  padding: 16px 18px;
+  display: flex; align-items: flex-start; gap: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+  pointer-events: all;
+  border-left: 4px solid var(--rose);
+  animation: toastSlide 0.4s cubic-bezier(0.16,1,0.3,1) both;
+  position: relative; overflow: hidden;
+}
+.toast.toast-success { border-left-color: #2ecc71; }
+.toast.toast-warn    { border-left-color: #f39c12; }
+.toast.toast-info    { border-left-color: #3498db; }
+.toast.removing      { animation: toastFadeOut 0.35s ease forwards; }
+
+@keyframes toastSlide {
+  from { opacity: 0; transform: translateX(60px) scale(0.92); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes toastFadeOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(60px); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.4); }
+}
+@keyframes sosGlow {
+  0%   { box-shadow: 0 0 0 0 rgba(232,82,106,0.5); }
+  70%  { box-shadow: 0 0 0 20px rgba(232,82,106,0); }
+  100% { box-shadow: 0 0 0 0 rgba(232,82,106,0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastProgress {
+  from { width: 100%; }
+  to   { width: 0%; }
+}

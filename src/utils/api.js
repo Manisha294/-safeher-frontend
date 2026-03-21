@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:8081'
+const BASE = 'http://localhost:8080'
 
 export const api = {
   register: (data) =>

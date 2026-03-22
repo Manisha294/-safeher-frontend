@@ -1,4 +1,5 @@
-const BASE = 'https://safeher-backend.onrender.com'
+const BASE = 'https://safeher-backend-2.onrender.com'
+
 export const api = {
   register: (data) =>
     fetch(`${BASE}/users/add`, {

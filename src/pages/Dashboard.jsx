@@ -137,8 +137,7 @@ export default function Dashboard() {
       setSosResult({ show: true, text: '⚠ Location access denied.', type: 'unsafe' })
     })
   }
-
-  async function getSafeRoute() {
+async function getSafeRoute() {
     if (!destination.trim()) {
       setAiRouteResult('⚠ Please enter a destination.')
       return
@@ -148,48 +147,89 @@ export default function Dashboard() {
 
     await new Promise(r => setTimeout(r, 1500))
 
-    const dest = destination.trim()
+    const dest = destination.trim().toLowerCase()
     const hour = new Date().getHours()
     const isNight = hour >= 20 || hour < 6
-    const isMorning = hour >= 6 && hour < 12
+    const isEvening = hour >= 17 && hour < 20
     const timeAdvice = isNight
-      ? '🌙 It is currently night time — extra caution advised!'
-      : isMorning
-        ? '🌅 Morning time — relatively safe for travel.'
-        : '☀️ Daytime — good time to travel.'
+      ? '🌙 Night time — HIGH RISK! Avoid solo travel.'
+      : isEvening
+        ? '🌆 Evening — moderate risk, prefer cab.'
+        : '☀️ Daytime — relatively safe for travel.'
 
-    setAiRouteResult(`🤖 AI Safety Advice for: ${dest}
+    const locationData = {
+      'hitech city': { risk: 'Low', transport: 'Metro/Cab', note: 'Well-lit IT area, generally safe. Metro is best option.', police: 'Cyberabad Police: 040-27852425', helpline: '1091' },
+      'hitec city': { risk: 'Low', transport: 'Metro/Cab', note: 'Well-lit IT area, generally safe. Metro is best option.', police: 'Cyberabad Police: 040-27852425', helpline: '1091' },
+      'charminar': { risk: 'Medium', transport: 'Cab only', note: 'Crowded market area. Avoid evening visits alone.', police: 'Hyderabad Old City Police: 040-24651234', helpline: '1091' },
+      'secunderabad': { risk: 'Low', transport: 'Train/Bus/Cab', note: 'Major hub, well connected. Safe during day.', police: 'Secunderabad Police: 040-27852425', helpline: '1091' },
+      'begumpet': { risk: 'Low', transport: 'Cab/Auto', note: 'Commercial area, generally safe.', police: 'Begumpet Police: 040-23220585', helpline: '1091' },
+      'banjara hills': { risk: 'Low', transport: 'Cab/Auto', note: 'Upscale area, very safe during day and evening.', police: 'Banjara Hills Police: 040-23540585', helpline: '1091' },
+      'jubilee hills': { risk: 'Low', transport: 'Cab/Auto', note: 'Upscale area, generally very safe.', police: 'Jubilee Hills Police: 040-23540585', helpline: '1091' },
+      'kukatpally': { risk: 'Medium', transport: 'Cab', note: 'Busy commercial area. Use cab at night.', police: 'Kukatpally Police: 040-23081234', helpline: '1091' },
+      'ameerpet': { risk: 'Low', transport: 'Metro/Cab', note: 'Metro available, well connected and safe.', police: 'Ameerpet Police: 040-23731234', helpline: '1091' },
+      'dilsukhnagar': { risk: 'Medium', transport: 'Bus/Cab', note: 'Busy area. Avoid late night travel alone.', police: 'Dilsukhnagar Police: 040-24071234', helpline: '1091' },
+      'lb nagar': { risk: 'Medium', transport: 'Cab', note: 'Use cab especially at night.', police: 'LB Nagar Police: 040-24151234', helpline: '1091' },
+      'uppal': { risk: 'Medium', transport: 'Cab', note: 'Prefer cab over walking at night.', police: 'Uppal Police: 040-27201234', helpline: '1091' },
+      'bhongir': { risk: 'Medium', transport: 'Bus/Cab', note: 'Small town. Use cab and inform contacts.', police: 'Bhongir Police: 08683-222222', helpline: '1091' },
+      'warangal': { risk: 'Medium', transport: 'Bus/Train/Cab', note: 'City area safe during day. Use cab at night.', police: 'Warangal Police: 0870-2577777', helpline: '1091' },
+      'nizamabad': { risk: 'Medium', transport: 'Cab/Bus', note: 'Prefer daytime travel. Inform contacts.', police: 'Nizamabad Police: 08462-222222', helpline: '1091' },
+      'karimnagar': { risk: 'Medium', transport: 'Cab/Bus', note: 'Safe during day. Avoid late night solo travel.', police: 'Karimnagar Police: 0878-2245678', helpline: '1091' },
+      'nalgonda': { risk: 'Medium', transport: 'Cab/Bus', note: 'Small city. Prefer cab at night.', police: 'Nalgonda Police: 08682-222222', helpline: '1091' },
+      'khammam': { risk: 'Medium', transport: 'Cab/Bus', note: 'Safe during day. Use cab at night.', police: 'Khammam Police: 08742-222222', helpline: '1091' },
+      'mahabubnagar': { risk: 'Medium', transport: 'Cab/Bus', note: 'Prefer daytime travel.', police: 'Mahabubnagar Police: 08542-222222', helpline: '1091' },
+      'adilabad': { risk: 'Medium', transport: 'Cab/Bus', note: 'Remote area. Inform contacts before travel.', police: 'Adilabad Police: 08732-222222', helpline: '1091' },
+      'mumbai': { risk: 'Medium', transport: 'Local Train/Cab', note: 'Use local train during day. Cab at night.', police: 'Mumbai Police: 022-22694444', helpline: '103' },
+      'delhi': { risk: 'High', transport: 'Metro/Cab', note: 'Use metro during day. Always use Uber/Ola at night.', police: 'Delhi Police: 011-23490000', helpline: '181' },
+      'bangalore': { risk: 'Medium', transport: 'Metro/Cab', note: 'Metro is safest. Use Uber/Ola at night.', police: 'Bangalore Police: 080-22943030', helpline: '1091' },
+      'bengaluru': { risk: 'Medium', transport: 'Metro/Cab', note: 'Metro is safest. Use Uber/Ola at night.', police: 'Bangalore Police: 080-22943030', helpline: '1091' },
+      'chennai': { risk: 'Low', transport: 'Bus/Cab', note: 'Generally safe city. Use cab at night.', police: 'Chennai Police: 044-28447777', helpline: '1091' },
+      'pune': { risk: 'Low', transport: 'Cab/Auto', note: 'Safe city. Use cab at night.', police: 'Pune Police: 020-26122880', helpline: '1091' },
+      'kolkata': { risk: 'Medium', transport: 'Metro/Cab', note: 'Use metro during day. Cab at night.', police: 'Kolkata Police: 033-22143500', helpline: '1091' },
+    }
+
+    const key = Object.keys(locationData).find(k => dest.includes(k))
+    const loc = locationData[key] || {
+      risk: 'Unknown',
+      transport: 'Cab recommended',
+      note: 'No specific data available. Follow general safety tips.',
+      police: 'Local Police: 100',
+      helpline: '1091'
+    }
+
+    const riskColor = loc.risk === 'Low' ? '🟢' : loc.risk === 'Medium' ? '🟡' : '🔴'
+
+    setAiRouteResult(`🤖 AI Safety Advice for: ${destination}
 
 ${timeAdvice}
 
+${riskColor} Safety Risk Level: ${loc.risk}
+📍 Location Note: ${loc.note}
+
 🚗 Recommended Travel Mode:
-- Use Ola/Uber cab — safest option especially at night
-- Avoid walking alone after 8 PM
-- Share your cab details with emergency contact before boarding
+- ${loc.transport} is best for this destination
+- Always prefer Ola/Uber over autos at night
+- Share ride details with emergency contact before boarding
 
-⚠️ Safety Tips for ${dest}:
+⚠️ Safety Tips:
 - Share your live location with a trusted person
-- Keep your phone fully charged before travelling
+- Keep your phone fully charged
 - Sit behind the driver in cabs — never in front
-- Note the cab number and driver details before entering
-- Avoid wearing expensive jewellery or showing valuables
+- Note the cab number and driver details
+- Avoid wearing expensive jewellery
 - Stay in well-lit and crowded areas
+- Trust your instincts — if something feels wrong, leave
 
-📞 Emergency Numbers to Keep Ready:
+📞 Emergency Numbers for ${destination}:
 - Police: 100
-- Women Helpline: 1091
+- Women Helpline: ${loc.helpline}
 - Ambulance: 108
-- Hyderabad Police: 040-27852425
-- Uber/Ola Support: In-app help button
+- ${loc.police}
 
-⏰ Best Time to Travel to ${dest}:
-- Safest: 7 AM – 7 PM
-- Moderate: 7 PM – 9 PM (use cab)
-- Avoid: After 9 PM alone
+⏰ Best Time to Travel:
+- ${loc.risk === 'Low' ? '6 AM – 10 PM is safe' : loc.risk === 'High' ? '7 AM – 6 PM only' : '7 AM – 7 PM recommended'}
+- ${isNight ? '⚠️ Currently night — please take extra precautions!' : 'Current time is fine for travel'}
 
-🛡️ SafeHer Tip:
-Press the SOS button if you feel unsafe at any point.
-Your emergency contacts will be alerted immediately!`)
+🛡️ Press SOS button immediately if you feel unsafe!`)
 
     setAiLoading(false)
   }
